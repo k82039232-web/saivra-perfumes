@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% block title %}السلة — Saivra{% endblock %}
+
+{% block head %}
+<style>
+  .cart-page { padding: 60px 40px 100px; max-width: 1100px; margin: 0 auto; }
+  .page-title { font-family: var(--ff-en); font-size: 2.5rem; font-style: italic; color: var(--cream); margin-bottom: 8px; }
+  .page-title span { color: var(--gold); }
+  .page-sub { color: var(--muted); font-size: .9rem; margin-bottom: 50px; }
+
+  .cart-layout { display: grid; grid-template-columns: 1fr 360px; gap: 40px; align-items: start; }
+
+  /* TABLE */
+  .cart-table { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .cart-table-head {
+    display: grid; grid-template-columns: 2fr 1fr 1fr 80px;
+    padding: 14px 24px;
+    background: var(--dark);
+    border-bottom: 1px solid var(--border);
+    font-size: .72rem; letter-spacing: .2em; text-transform: uppercase; color: var(--muted);
+  }
+  .cart-item {
+    display: grid; grid-template-columns: 2fr 1fr 1fr 80px;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--card);
+    transition: background .2s;
+  }
+  .cart-item:last-child { border-bottom: none; }
+  .cart-item:hover { background: #1c1c1c; }
+
+  .item-info { display: flex; align-items: center; gap: 16px; }
+  .item-img {
+    width: 70px; height: 90px;
+    background: #1e1e1e; border: 1px solid var(--border);
+    border-radius: 2px; overflow: hidden; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .item-img img { width: 100%; height: 100%; object-fit: cover; }
+  .item-img .emoji { font-size: 2rem; }
+  .item-name { font-family: var(--ff-en); font-size: 1rem; font-style: italic; color: var(--cream); }
+  .item-cat  { font-size: .75rem; color: var(--muted); margin-top: 4px; }
+
+  .item-price { color: var(--gold2); font-weight: 600; }
+
+  .qty-form { display: flex; align-items: center; gap: 0; }
+  .qty-mini { width: 32px; height: 32px; background: var(--dark); border: 1px solid var(--border); color: var(--cream); cursor: pointer; font-size: .9rem; }
+  .qty-mini:hover { background: var(--gold); color: var(--black); border-color: var(--gold); }
+  .qty-num { width: 44px; height: 32px; background: var(--black); border: 1px solid var(--border); border-right: 0; border-left: 0; text-align: center; color: var(--cream); font-size: .9rem; }
+  .qty-num:focus { outline: none; }
+
+  .remove-btn { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1rem; transition: color .2s; padding: 4px 8px; }
+  .remove-btn:hover { color: var(--danger); }
+
+  /* SUMMARY */
+  .cart-summary { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 30px; position: sticky; top: 90px; }
+  .summary-title { font-family: var(--ff-en); font-size: 1.3rem; font-style: italic; color: var(--cream); margin-bottom: 24px; }
+  .summary-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: .9rem; }
+  .summary-row:last-of-type { border: none; }
+  .summary-label { color: var(--muted); }
+  .summary-val { color: var(--cream); font-weight: 500; }
+  .summary-total { display: flex; justify-content: space-between; align-items: center; padding: 16px 0 24px; border-top: 1px solid var(--gold); margin-top: 8px; }
+  .total-label { font-size: .8rem; letter-spacing: .15em; text-transform: uppercase; color: var(--gold); }
+  .total-amount { font-size: 1.6rem; font-weight: 700; color: var(--gold2); }
+  .total-amount small { font-size: .85rem; font-weight: 300; }
+  .summary .btn { width: 100%; justify-content: center; margin-bottom: 10px; }
+
+  /* EMPTY */
+  .empty-cart { text-align: center; padding: 100px 20px; }
+  .empty-cart i { font-size: 4rem; color: var(--border); margin-bottom: 20px; }
+  .empty-cart h2 { font-family: var(--ff-en); font-style: italic; color: var(--cream); margin-bottom: 12px; }
+  .empty-cart p { color: var(--muted); margin-bottom: 30px; }
+
+  @media (max-width: 800px) {
+    .cart-layout { grid-template-columns: 1fr; }
+    .cart-table-head { display: none; }
+    .cart-item { grid-template-columns: 1fr; gap: 12px; }
+    .cart-page { padding: 40px 20px 80px; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="cart-page">
+  <h1 class="page-title"><span>السلة</span> — Cart</h1>
+  <p class="page-sub">راجع طلباتك قبل الدفع</p>
+
+  {% if cart_items %}
+  <div class="cart-layout">
+    <!-- ITEMS -->
+    <div>
+      <div class="cart-table">
+        <div class="cart-table-head">
+          <span>المنتج</span>
+          <span>السعر</span>
+          <span>الكمية</span>
+          <span>حذف</span>
+        </div>
+        {% for item in cart_items %}
+        <div class="cart-item">
+          <div class="item-info">
+            <div class="item-img">
+              {% if item.product.image_url %}
+                <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}"/>
+              {% else %}
+                <span class="emoji">🪻</span>
+              {% endif %}
+            </div>
+            <div>
+              <div class="item-name">{{ item.product.name }}</div>
+              <div class="item-cat">{{ item.product.category }}</div>
+              <div class="item-price" style="margin-top:6px;">الإجمالي: {{ "%.0f"|format(item.subtotal) }} ج.م</div>
+            </div>
+          </div>
+
+          <div class="item-price">{{ "%.0f"|format(item.product.price) }} ج.م</div>
+
+          <form class="qty-form" action="{{ url_for('update_cart', product_id=item.product.id) }}" method="post">
+            <button type="button" class="qty-mini" onclick="adjustQty(this,-1)">−</button>
+            <input type="number" name="qty" class="qty-num" value="{{ item.qty }}" min="0" onchange="this.form.submit()"/>
+            <button type="button" class="qty-mini" onclick="adjustQty(this,1)">+</button>
+          </form>
+
+          <a href="{{ url_for('remove_from_cart', product_id=item.product.id) }}" class="remove-btn" title="حذف">
+            <i class="fa fa-trash-can"></i>
+          </a>
+        </div>
+        {% endfor %}
+      </div>
+      <div style="margin-top:16px;">
+        <a href="{{ url_for('index') }}#collection" class="btn btn-outline">
+          <i class="fa fa-arrow-right"></i> متابعة التسوق
+        </a>
+      </div>
+    </div>
+
+    <!-- SUMMARY -->
+    <div class="cart-summary">
+      <div class="summary-title">ملخص الطلب</div>
+      {% for item in cart_items %}
+      <div class="summary-row">
+        <span class="summary-label">{{ item.product.name }} × {{ item.qty }}</span>
+        <span class="summary-val">{{ "%.0f"|format(item.subtotal) }} ج.م</span>
+      </div>
+      {% endfor %}
+      <div class="summary-row">
+        <span class="summary-label">الشحن</span>
+        <span class="summary-val" style="color:var(--success);">يُحدد عند التأكيد</span>
+      </div>
+      <div class="summary-total">
+        <span class="total-label">الإجمالي</span>
+        <span class="total-amount">{{ "%.0f"|format(total) }} <small>ج.م</small></span>
+      </div>
+      <a href="{{ url_for('checkout') }}" class="btn btn-gold" style="display:flex;width:100%;justify-content:center;">
+        <i class="fa fa-credit-card"></i> إتمام الطلب
+      </a>
+      <a href="{{ url_for('index') }}" class="btn btn-outline" style="display:flex;width:100%;justify-content:center;margin-top:10px;">
+        <i class="fa fa-chevron-right"></i> العودة للتسوق
+      </a>
+      <div style="margin-top:20px;display:flex;gap:12px;justify-content:center;color:var(--muted);font-size:.8rem;">
+        <span><i class="fa fa-shield-halved"></i> دفع آمن</span>
+        <span><i class="fa fa-rotate-left"></i> إرجاع مضمون</span>
+      </div>
+    </div>
+  </div>
+
+  {% else %}
+  <div class="empty-cart">
+    <i class="fa fa-bag-shopping"></i>
+    <h2>السلة فارغة</h2>
+    <p>لم تضف أي منتجات بعد — اكتشف مجموعتنا الآن</p>
+    <a href="{{ url_for('index') }}#collection" class="btn btn-gold">
+      <i class="fa fa-star"></i> تصفح المجموعة
+    </a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function adjustQty(btn, delta) {
+    const form = btn.closest('form');
+    const inp  = form.querySelector('.qty-num');
+    const val  = Math.max(0, parseInt(inp.value || 1) + delta);
+    inp.value  = val;
+    form.submit();
+  }
+</script>
+{% endblock %}

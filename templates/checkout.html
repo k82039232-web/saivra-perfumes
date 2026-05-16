@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% block title %}إتمام الطلب — Saivra{% endblock %}
+
+{% block head %}
+<style>
+  .checkout-page { padding: 60px 40px 100px; max-width: 1100px; margin: 0 auto; }
+  .page-title { font-family: var(--ff-en); font-size: 2.5rem; font-style: italic; color: var(--cream); margin-bottom: 8px; }
+  .page-title span { color: var(--gold); }
+  .page-sub { color: var(--muted); margin-bottom: 50px; }
+
+  .checkout-layout { display: grid; grid-template-columns: 1fr 380px; gap: 40px; align-items: start; }
+
+  /* FORM */
+  .checkout-form-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 36px; }
+  .form-section-title { font-family: var(--ff-en); font-style: italic; font-size: 1.2rem; color: var(--gold); margin-bottom: 24px; display: flex; align-items: center; gap: 10px; }
+  .form-section-title i { font-size: .9rem; }
+  .form-divider { height: 1px; background: var(--border); margin: 30px 0; }
+
+  .form-group { margin-bottom: 20px; }
+  .form-group label { display: block; font-size: .78rem; letter-spacing: .15em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .form-group label .req { color: var(--gold); }
+  .form-control {
+    width: 100%;
+    background: var(--dark);
+    border: 1px solid var(--border);
+    color: var(--cream);
+    font-family: var(--ff-ar);
+    font-size: .95rem;
+    padding: 13px 16px;
+    border-radius: var(--radius);
+    transition: border-color .2s;
+    outline: none;
+  }
+  .form-control:focus { border-color: var(--gold); }
+  .form-control::placeholder { color: #555; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  textarea.form-control { resize: vertical; min-height: 100px; }
+
+  .payment-note {
+    background: rgba(200,169,110,.06);
+    border: 1px solid rgba(200,169,110,.2);
+    padding: 16px 20px;
+    border-radius: var(--radius);
+    font-size: .88rem;
+    color: var(--gold);
+    display: flex; align-items: center; gap: 10px;
+    margin-top: 20px;
+  }
+
+  /* ORDER SUMMARY */
+  .order-summary { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 30px; position: sticky; top: 90px; }
+  .order-summary h3 { font-family: var(--ff-en); font-style: italic; font-size: 1.2rem; color: var(--cream); margin-bottom: 24px; }
+  .order-item { display: flex; gap: 14px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .order-item:last-of-type { border: none; }
+  .order-item .oi-img {
+    width: 56px; height: 72px; flex-shrink: 0;
+    background: var(--dark); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; overflow: hidden;
+  }
+  .order-item .oi-img img { width: 100%; height: 100%; object-fit: cover; }
+  .order-item .oi-name { font-size: .9rem; color: var(--cream); }
+  .order-item .oi-qty  { font-size: .8rem; color: var(--muted); margin-top: 3px; }
+  .order-item .oi-price { margin-right: auto; font-weight: 600; color: var(--gold2); }
+
+  .total-block { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--gold); }
+  .total-block .row { display: flex; justify-content: space-between; font-size: .9rem; padding: 4px 0; }
+  .total-block .row .label { color: var(--muted); }
+  .total-block .grand { display: flex; justify-content: space-between; margin-top: 12px; }
+  .total-block .grand .label { font-size: .75rem; letter-spacing: .2em; text-transform: uppercase; color: var(--gold); }
+  .total-block .grand .amount { font-size: 1.5rem; font-weight: 700; color: var(--gold2); }
+
+  .submit-btn { width: 100%; justify-content: center; margin-top: 20px; font-size: 1rem; padding: 16px; }
+
+  @media (max-width: 800px) {
+    .checkout-layout { grid-template-columns: 1fr; }
+    .form-grid { grid-template-columns: 1fr; }
+    .checkout-page { padding: 40px 20px 80px; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="checkout-page">
+  <h1 class="page-title"><span>إتمام</span> الطلب</h1>
+  <p class="page-sub">أدخل بياناتك وسيتواصل معك فريقنا لتأكيد الطلب</p>
+
+  <form method="post" action="{{ url_for('checkout') }}">
+  <div class="checkout-layout">
+    <!-- FORM -->
+    <div class="checkout-form-card">
+      <div class="form-section-title"><i class="fa fa-user"></i> بياناتك الشخصية</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>الاسم الكامل <span class="req">*</span></label>
+          <input type="text" name="name" class="form-control" placeholder="أحمد محمد" required/>
+        </div>
+        <div class="form-group">
+          <label>رقم الهاتف <span class="req">*</span></label>
+          <input type="tel" name="phone" class="form-control" placeholder="01xxxxxxxxx" required/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>البريد الإلكتروني <span style="color:var(--muted)">(اختياري)</span></label>
+        <input type="email" name="email" class="form-control" placeholder="example@email.com"/>
+      </div>
+
+      <div class="form-divider"></div>
+
+      <div class="form-section-title"><i class="fa fa-location-dot"></i> عنوان التوصيل</div>
+      <div class="form-group">
+        <label>العنوان بالتفصيل <span class="req">*</span></label>
+        <textarea name="address" class="form-control" placeholder="المحافظة، المدينة، الشارع، رقم المنزل..." required></textarea>
+      </div>
+
+      <div class="payment-note">
+        <i class="fa fa-circle-info"></i>
+        الدفع عند الاستلام — سيتواصل معك فريقنا لتأكيد الطلب وتحديد موعد التوصيل.
+      </div>
+    </div>
+
+    <!-- ORDER SUMMARY -->
+    <div class="order-summary">
+      <h3>ملخص الطلب</h3>
+      {% for item in cart_items %}
+      <div class="order-item">
+        <div class="oi-img">
+          {% if item.product.image_url %}
+            <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}"/>
+          {% else %}🪻{% endif %}
+        </div>
+        <div>
+          <div class="oi-name">{{ item.product.name }}</div>
+          <div class="oi-qty">الكمية: {{ item.qty }}</div>
+        </div>
+        <div class="oi-price">{{ "%.0f"|format(item.subtotal) }} ج.م</div>
+      </div>
+      {% endfor %}
+
+      <div class="total-block">
+        <div class="row"><span class="label">المجموع الفرعي</span><span>{{ "%.0f"|format(total) }} ج.م</span></div>
+        <div class="row"><span class="label">الشحن</span><span style="color:var(--gold)">يُحدد لاحقاً</span></div>
+        <div class="grand">
+          <span class="label">الإجمالي</span>
+          <span class="amount">{{ "%.0f"|format(total) }} <small style="font-size:.8rem;font-weight:300;">ج.م</small></span>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-gold submit-btn">
+        <i class="fa fa-check"></i> تأكيد الطلب
+      </button>
+      <a href="{{ url_for('cart') }}" class="btn btn-outline" style="display:flex;width:100%;justify-content:center;margin-top:10px;">
+        <i class="fa fa-arrow-right"></i> العودة للسلة
+      </a>
+    </div>
+  </div>
+  </form>
+</div>
+{% endblock %}

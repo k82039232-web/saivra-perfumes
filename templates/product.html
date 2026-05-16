@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+{% block title %}{{ product.name }} — Saivra{% endblock %}
+
+{% block head %}
+<style>
+  .product-page { padding: 60px 40px 100px; max-width: 1300px; margin: 0 auto; }
+  .breadcrumb { display: flex; align-items: center; gap: 10px; font-size: .8rem; color: var(--muted); margin-bottom: 50px; }
+  .breadcrumb a:hover { color: var(--gold); }
+  .breadcrumb span { color: var(--border); }
+
+  .product-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+
+  /* IMAGE */
+  .product-images {}
+  .main-img-wrap {
+    aspect-ratio: 3/4;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+  .main-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+  .main-img-wrap .placeholder { font-size: 8rem; opacity: .15; }
+  .cat-badge {
+    position: absolute; top: 16px; right: 16px;
+    background: rgba(200,169,110,.15);
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-size: .7rem; letter-spacing: .2em;
+    padding: 6px 14px;
+    text-transform: uppercase;
+  }
+
+  /* INFO */
+  .product-info {}
+  .p-eyebrow { font-size: .72rem; letter-spacing: .3em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
+  .p-name { font-family: var(--ff-en); font-size: clamp(2rem, 4vw, 3rem); font-style: italic; color: var(--cream); margin-bottom: 10px; line-height: 1.15; }
+  .p-price { font-size: 2rem; color: var(--gold2); font-weight: 700; margin-bottom: 30px; }
+  .p-price small { font-size: 1rem; font-weight: 300; color: var(--muted); }
+
+  .p-divider { height: 1px; background: var(--border); margin: 28px 0; }
+
+  .p-desc { color: #b0aa9a; font-size: 1rem; line-height: 1.9; margin-bottom: 30px; }
+
+  .p-stock { display: inline-flex; align-items: center; gap: 8px; font-size: .8rem; margin-bottom: 30px; }
+  .p-stock.in { color: var(--success); }
+  .p-stock.out { color: var(--danger); }
+
+  .qty-control { display: flex; align-items: center; gap: 0; margin-bottom: 20px; }
+  .qty-control label { font-size: .8rem; letter-spacing: .15em; text-transform: uppercase; color: var(--muted); margin-left: 16px; }
+  .qty-btn {
+    width: 40px; height: 40px;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--cream); font-size: 1.1rem; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all .2s;
+  }
+  .qty-btn:hover { background: var(--gold); color: var(--black); border-color: var(--gold); }
+  .qty-input {
+    width: 60px; height: 40px; text-align: center;
+    background: var(--dark); border: 1px solid var(--border);
+    border-right: 0; border-left: 0;
+    color: var(--cream); font-family: var(--ff-ar); font-size: 1rem;
+  }
+  .qty-input:focus { outline: none; }
+
+  .add-form { display: flex; flex-direction: column; gap: 12px; }
+  .add-form .btn { justify-content: center; font-size: .95rem; padding: 16px; }
+
+  /* FEATURES */
+  .features { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 28px; }
+  .feature-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 16px;
+    background: rgba(200,169,110,.07); border: 1px solid rgba(200,169,110,.2);
+    color: var(--gold); font-size: .78rem; letter-spacing: .1em;
+  }
+
+  /* RELATED */
+  .related-section { padding: 80px 40px; border-top: 1px solid var(--border); }
+  .related-inner { max-width: 1300px; margin: 0 auto; }
+  .related-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 50px; }
+
+  @media (max-width: 900px) {
+    .product-layout { grid-template-columns: 1fr; }
+    .related-grid { grid-template-columns: repeat(2, 1fr); }
+    .product-page { padding: 40px 20px 80px; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="product-page">
+  <div class="breadcrumb">
+    <a href="{{ url_for('index') }}">الرئيسية</a>
+    <span>/</span>
+    <a href="{{ url_for('index') }}#collection">المجموعة</a>
+    <span>/</span>
+    <span style="color:var(--cream)">{{ product.name }}</span>
+  </div>
+
+  <div class="product-layout">
+    <!-- IMAGE -->
+    <div class="product-images">
+      <div class="main-img-wrap">
+        {% if product.image_url %}
+          <img src="{{ product.image_url }}" alt="{{ product.name }}"/>
+        {% else %}
+          <div class="placeholder">🪻</div>
+        {% endif %}
+        <div class="cat-badge">{{ product.category }}</div>
+      </div>
+    </div>
+
+    <!-- INFO -->
+    <div class="product-info">
+      <div class="p-eyebrow">✦ Saivra Exclusive</div>
+      <h1 class="p-name">{{ product.name }}</h1>
+      <div class="p-price">{{ "%.0f"|format(product.price) }} <small>جنيه مصري</small></div>
+
+      <div class="p-divider"></div>
+
+      {% if product.description %}
+        <p class="p-desc">{{ product.description }}</p>
+      {% endif %}
+
+      <div class="p-stock {% if product.stock > 0 %}in{% else %}out{% endif %}">
+        <i class="fa {% if product.stock > 0 %}fa-circle-check{% else %}fa-circle-xmark{% endif %}"></i>
+        {% if product.stock > 0 %}متوفر — {{ product.stock }} قطعة متبقية{% else %}غير متوفر حالياً{% endif %}
+      </div>
+
+      {% if product.stock > 0 %}
+      <form class="add-form" action="{{ url_for('add_to_cart', product_id=product.id) }}" method="post">
+        <div class="qty-control">
+          <label>الكمية</label>
+          <button type="button" class="qty-btn" onclick="changeQty(-1)">−</button>
+          <input type="number" name="qty" id="qtyInput" class="qty-input" value="1" min="1" max="{{ product.stock }}"/>
+          <button type="button" class="qty-btn" onclick="changeQty(1)">+</button>
+        </div>
+        <button type="submit" class="btn btn-gold">
+          <i class="fa fa-bag-shopping"></i> أضف إلى السلة
+        </button>
+        <a href="{{ url_for('cart') }}" class="btn btn-outline">
+          <i class="fa fa-eye"></i> عرض السلة
+        </a>
+      </form>
+      {% else %}
+        <div class="btn btn-outline" style="justify-content:center;opacity:.5;cursor:default;">غير متوفر</div>
+      {% endif %}
+
+      <div class="features">
+        <div class="feature-tag"><i class="fa fa-shield-halved"></i> ضمان الأصالة</div>
+        <div class="feature-tag"><i class="fa fa-truck"></i> توصيل سريع</div>
+        <div class="feature-tag"><i class="fa fa-box"></i> تغليف فاخر</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RELATED -->
+{% if related %}
+<section class="related-section">
+  <div class="related-inner">
+    <div class="section-header">
+      <span class="eyebrow">قد يعجبك أيضاً</span>
+      <h2>Related Scents</h2>
+      <div class="divider"></div>
+    </div>
+    <div class="related-grid">
+      {% for p in related %}
+      <div class="product-card">
+        <a href="{{ url_for('product', product_id=p.id) }}" class="img-wrap">
+          {% if p.image_url %}<img src="{{ p.image_url }}" alt="{{ p.name }}"/>
+          {% else %}<div class="no-img">🪻</div>{% endif %}
+        </a>
+        <div class="card-body">
+          <div class="card-cat">{{ p.category }}</div>
+          <div class="card-name">{{ p.name }}</div>
+          <div class="card-price">{{ "%.0f"|format(p.price) }} <small>ج.م</small></div>
+        </div>
+        <div class="card-footer">
+          <a href="{{ url_for('product', product_id=p.id) }}" class="btn btn-gold" style="flex:1;justify-content:center;">اعرف أكثر</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function changeQty(delta) {
+    const inp = document.getElementById('qtyInput');
+    const max = parseInt(inp.max) || 99;
+    inp.value = Math.min(max, Math.max(1, parseInt(inp.value || 1) + delta));
+  }
+</script>
+{% endblock %}

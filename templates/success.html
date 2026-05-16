@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% block title %}تم الطلب — Saivra{% endblock %}
+
+{% block head %}
+<style>
+  .success-page {
+    min-height: calc(100vh - 72px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 40px 20px;
+    background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(200,169,110,.06) 0%, transparent 70%);
+  }
+  .success-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 70px 60px;
+    max-width: 560px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    animation: fadeUp .6s ease both;
+  }
+  .success-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .success-icon {
+    width: 90px; height: 90px;
+    background: rgba(200,169,110,.1);
+    border: 1px solid rgba(200,169,110,.3);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 30px;
+    font-size: 2.5rem;
+    animation: pop .4s .3s ease both;
+  }
+  @keyframes pop { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+  .success-title {
+    font-family: var(--ff-en);
+    font-size: 2.2rem;
+    font-style: italic;
+    color: var(--cream);
+    margin-bottom: 12px;
+  }
+  .success-title span { color: var(--gold); }
+  .success-sub { color: var(--muted); line-height: 1.8; margin-bottom: 40px; }
+
+  .success-info {
+    background: var(--dark);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 36px;
+    display: flex; align-items: center; gap: 14px;
+    text-align: right;
+  }
+  .success-info i { color: var(--gold); font-size: 1.3rem; flex-shrink: 0; }
+  .success-info p { font-size: .88rem; color: var(--muted); }
+  .success-info strong { color: var(--cream); }
+
+  .success-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .success-actions .btn { min-width: 160px; justify-content: center; }
+
+  .confetti {
+    position: fixed; inset: 0; pointer-events: none; z-index: 9998; overflow: hidden;
+  }
+  .dot {
+    position: absolute; top: -10px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    animation: fall linear forwards;
+  }
+  @keyframes fall {
+    to { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+
+  @keyframes fadeUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:none; } }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="confetti" id="confetti"></div>
+<div class="success-page">
+  <div class="success-card">
+    <div class="success-icon">✓</div>
+    <h1 class="success-title">تم <span>تأكيد طلبك!</span></h1>
+    <p class="success-sub">
+      شكراً لاختيارك Saivra — طلبك في أيدٍ أمينة.<br/>
+      سيتواصل معك فريقنا قريباً لتأكيد التوصيل.
+    </p>
+    <div class="success-info">
+      <i class="fa fa-phone-volume"></i>
+      <p><strong>الخطوة التالية:</strong> سيتصل بك أحد ممثلي Saivra على رقمك المسجل لتأكيد الطلب وتحديد موعد التسليم.</p>
+    </div>
+    <div class="success-actions">
+      <a href="{{ url_for('index') }}" class="btn btn-gold">
+        <i class="fa fa-house"></i> الرئيسية
+      </a>
+      <a href="{{ url_for('index') }}#collection" class="btn btn-outline">
+        <i class="fa fa-star"></i> تسوق أكثر
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Simple confetti
+  const colors = ['#c8a96e', '#e8c98a', '#f5ede0', '#2a2016'];
+  const container = document.getElementById('confetti');
+  for (let i = 0; i < 60; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'dot';
+    dot.style.cssText = `
+      left: ${Math.random() * 100}%;
+      background: ${colors[Math.floor(Math.random() * colors.length)]};
+      animation-duration: ${1.5 + Math.random() * 2}s;
+      animation-delay: ${Math.random() * 1}s;
+      width: ${4 + Math.random() * 8}px;
+      height: ${4 + Math.random() * 8}px;
+      opacity: ${0.5 + Math.random() * 0.5};
+    `;
+    container.appendChild(dot);
+  }
+  setTimeout(() => container.remove(), 4000);
+</script>
+{% endblock %}

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Saivra Perfumes{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Cormorant+Garamond:wght@300;400;500&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+  <style>
+    /* ── TOKENS ── */
+    :root {
+      --black:   #080808;
+      --dark:    #111111;
+      --card:    #161616;
+      --border:  #2a2a2a;
+      --gold:    #c8a96e;
+      --gold2:   #e8c98a;
+      --cream:   #f5ede0;
+      --muted:   #888880;
+      --white:   #faf8f5;
+      --danger:  #c0392b;
+      --success: #27ae60;
+      --ff-en:   'Playfair Display', serif;
+      --ff-ar:   'Tajawal', sans-serif;
+      --ff-body: 'Cormorant Garamond', serif;
+      --radius:  2px;
+      --shadow:  0 4px 40px rgba(0,0,0,.6);
+    }
+
+    /* ── RESET ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--black);
+      color: var(--cream);
+      font-family: var(--ff-ar);
+      font-weight: 300;
+      line-height: 1.7;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    /* ── GRAIN OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: .4;
+    }
+
+    /* ── FLASH MESSAGES ── */
+    .flash-wrap { position: fixed; top: 90px; left: 50%; transform: translateX(-50%); z-index: 5000; width: 90%; max-width: 420px; display: flex; flex-direction: column; gap: 8px; }
+    .flash { padding: 12px 20px; border-radius: var(--radius); font-size: .9rem; animation: slideIn .3s ease; border-right: 3px solid; }
+    .flash.success { background: rgba(39,174,96,.15); border-color: var(--success); color: #6fcf97; }
+    .flash.error   { background: rgba(192,57,43,.15);  border-color: var(--danger);  color: #e87a7a; }
+    .flash.info    { background: rgba(200,169,110,.1);  border-color: var(--gold);    color: var(--gold2); }
+    @keyframes slideIn { from { opacity:0; transform:translateY(-10px); } to { opacity:1; transform:none; } }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 1000;
+      background: rgba(8,8,8,.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      height: 72px;
+      display: flex; align-items: center;
+      padding: 0 40px;
+    }
+    .nav-inner {
+      width: 100%; max-width: 1300px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: var(--ff-en);
+      font-size: 1.6rem;
+      letter-spacing: .2em;
+      color: var(--gold);
+      font-style: italic;
+    }
+    .nav-logo span { color: var(--cream); font-style: normal; font-weight: 600; }
+    .nav-links { display: flex; align-items: center; gap: 32px; }
+    .nav-links a {
+      font-size: .82rem;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      transition: color .2s;
+      position: relative;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -4px; right: 0; width: 0; height: 1px;
+      background: var(--gold); transition: width .3s;
+    }
+    .nav-links a:hover::after { width: 100%; }
+    .cart-btn {
+      position: relative;
+      color: var(--cream);
+      font-size: 1.1rem;
+      transition: color .2s;
+    }
+    .cart-btn:hover { color: var(--gold); }
+    .cart-badge {
+      position: absolute; top: -8px; left: -8px;
+      background: var(--gold);
+      color: var(--black);
+      font-size: .65rem;
+      font-weight: 700;
+      border-radius: 50%;
+      width: 18px; height: 18px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* ── MAIN WRAPPER ── */
+    main { padding-top: 72px; min-height: calc(100vh - 72px); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--dark);
+      border-top: 1px solid var(--border);
+      padding: 60px 40px 30px;
+    }
+    .footer-inner { max-width: 1300px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 60px; }
+    .footer-brand .brand-name { font-family: var(--ff-en); font-size: 2rem; color: var(--gold); font-style: italic; margin-bottom: 14px; }
+    .footer-brand p { color: var(--muted); font-size: .9rem; line-height: 1.8; }
+    .footer-col h4 { color: var(--gold); font-size: .75rem; letter-spacing: .2em; text-transform: uppercase; margin-bottom: 18px; }
+    .footer-col a { display: block; color: var(--muted); font-size: .9rem; margin-bottom: 10px; transition: color .2s; }
+    .footer-col a:hover { color: var(--cream); }
+    .footer-bottom { max-width: 1300px; margin: 40px auto 0; padding-top: 24px; border-top: 1px solid var(--border); text-align: center; color: var(--muted); font-size: .8rem; letter-spacing: .1em; }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 13px 32px;
+      font-family: var(--ff-ar);
+      font-size: .85rem;
+      letter-spacing: .1em;
+      border: none; cursor: pointer;
+      transition: all .25s;
+      border-radius: var(--radius);
+    }
+    .btn-gold {
+      background: var(--gold);
+      color: var(--black);
+      font-weight: 700;
+    }
+    .btn-gold:hover { background: var(--gold2); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(200,169,110,.3); }
+    .btn-outline {
+      background: transparent;
+      color: var(--cream);
+      border: 1px solid var(--border);
+    }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+    .btn-danger { background: var(--danger); color: #fff; font-weight: 600; }
+    .btn-danger:hover { background: #a93226; }
+
+    /* ── SECTION HEADER ── */
+    .section-header { text-align: center; margin-bottom: 60px; }
+    .section-header .eyebrow {
+      display: inline-block;
+      font-size: .72rem; letter-spacing: .35em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 14px;
+    }
+    .section-header h2 {
+      font-family: var(--ff-en);
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 400;
+      color: var(--cream);
+      font-style: italic;
+    }
+    .section-header .divider {
+      width: 60px; height: 1px; background: var(--gold); margin: 18px auto 0;
+    }
+
+    /* ── PRODUCT CARD ── */
+    .product-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: transform .3s, border-color .3s, box-shadow .3s;
+    }
+    .product-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--gold);
+      box-shadow: 0 16px 48px rgba(200,169,110,.1);
+    }
+    .product-card .img-wrap {
+      aspect-ratio: 3/4;
+      overflow: hidden;
+      background: #1e1e1e;
+      position: relative;
+    }
+    .product-card .img-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform .5s ease;
+    }
+    .product-card:hover .img-wrap img { transform: scale(1.05); }
+    .product-card .no-img {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem; opacity: .2;
+    }
+    .product-card .card-body { padding: 20px; }
+    .product-card .card-cat { font-size: .72rem; letter-spacing: .2em; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
+    .product-card .card-name { font-family: var(--ff-en); font-size: 1.15rem; font-style: italic; color: var(--cream); margin-bottom: 10px; }
+    .product-card .card-price { font-size: 1.1rem; font-weight: 700; color: var(--gold2); }
+    .product-card .card-price small { font-weight: 300; font-size: .8rem; color: var(--muted); }
+    .product-card .card-footer { padding: 0 20px 20px; display: flex; gap: 8px; }
+    .product-card .card-footer .btn { flex: 1; justify-content: center; font-size: .8rem; padding: 10px 16px; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 0 20px; }
+      .nav-links { gap: 20px; }
+      .footer-inner { grid-template-columns: 1fr; gap: 32px; }
+    }
+  </style>
+  {% block head %}{% endblock %}
+</head>
+<body>
+
+<!-- FLASH -->
+<div class="flash-wrap">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}
+      <div class="flash {{ cat }}">{{ msg }}</div>
+    {% endfor %}
+  {% endwith %}
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="{{ url_for('index') }}" class="nav-logo"><span>S</span>aivra</a>
+    <div class="nav-links">
+      <a href="{{ url_for('index') }}" {% if request.endpoint=='index' %}class="active"{% endif %}>الرئيسية</a>
+      <a href="{{ url_for('index') }}#collection">المجموعة</a>
+      <a href="{{ url_for('cart') }}" class="cart-btn">
+        <i class="fa fa-bag-shopping"></i>
+        {% if cart_count > 0 %}<span class="cart-badge">{{ cart_count }}</span>{% endif %}
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main>{% block content %}{% endblock %}</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="brand-name">Saivra</div>
+      <p>عطور راقية تُروي قصة أناقتك — كل زجاجة تحمل سحراً خاصاً ينبثق مع كل نفَس.</p>
+    </div>
+    <div class="footer-col">
+      <h4>روابط</h4>
+      <a href="{{ url_for('index') }}">الرئيسية</a>
+      <a href="{{ url_for('index') }}#collection">المجموعة</a>
+      <a href="{{ url_for('cart') }}">السلة</a>
+    </div>
+    <div class="footer-col">
+      <h4>تواصل معنا</h4>
+      <a href="#">Instagram</a>
+      <a href="#">WhatsApp</a>
+      <a href="#">info@saivra.com</a>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2024 Saivra Perfumes · جميع الحقوق محفوظة</div>
+</footer>
+
+<script>
+  // Auto-dismiss flash
+  setTimeout(() => {
+    document.querySelectorAll('.flash').forEach(el => {
+      el.style.transition = 'opacity .4s';
+      el.style.opacity = '0';
+      setTimeout(() => el.remove(), 400);
+    });
+  }, 3500);
+</script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

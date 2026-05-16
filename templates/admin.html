@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>لوحة التحكم — Saivra Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+  <style>
+    :root {
+      --black: #080808; --dark: #111; --card: #161616; --border: #252525;
+      --gold: #c8a96e; --gold2: #e8c98a; --cream: #f5ede0; --muted: #888;
+      --danger: #c0392b; --success: #27ae60; --warning: #f39c12;
+      --ff: 'Tajawal', sans-serif; --ff-en: 'Playfair Display', serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--black); color: var(--cream); font-family: var(--ff); font-weight: 300; min-height: 100vh; }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    /* SIDEBAR */
+    .sidebar {
+      position: fixed; top: 0; right: 0; bottom: 0; width: 240px;
+      background: var(--dark); border-left: 1px solid var(--border);
+      display: flex; flex-direction: column; z-index: 100; padding: 0;
+    }
+    .sidebar-logo {
+      padding: 28px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .sidebar-logo .brand { font-family: var(--ff-en); font-style: italic; font-size: 1.5rem; color: var(--gold); }
+    .sidebar-logo .tag { font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); margin-top: 2px; }
+    .nav-menu { flex: 1; padding: 16px 12px; }
+    .nav-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 14px; border-radius: 4px;
+      font-size: .9rem; color: var(--muted);
+      cursor: pointer; transition: all .2s;
+      margin-bottom: 4px;
+    }
+    .nav-item:hover, .nav-item.active { background: rgba(200,169,110,.08); color: var(--gold); }
+    .nav-item i { width: 18px; text-align: center; font-size: .9rem; }
+    .sidebar-footer { padding: 16px 12px; border-top: 1px solid var(--border); }
+    .logout-btn {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px; color: var(--muted); font-size: .85rem;
+      transition: color .2s; cursor: pointer; border-radius: 4px;
+    }
+    .logout-btn:hover { color: var(--danger); }
+
+    /* MAIN */
+    .main { margin-right: 240px; padding: 36px; min-height: 100vh; }
+
+    /* HEADER */
+    .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; }
+    .page-header h1 { font-family: var(--ff-en); font-style: italic; font-size: 1.8rem; color: var(--cream); }
+    .header-meta { font-size: .8rem; color: var(--muted); }
+
+    /* STATS */
+    .stats-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 36px; }
+    .stat-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 4px; padding: 20px;
+      position: relative; overflow: hidden;
+    }
+    .stat-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: var(--gold); transform: scaleX(0); transition: transform .3s; transform-origin: right; }
+    .stat-card:hover::after { transform: scaleX(1); }
+    .stat-label { font-size: .72rem; letter-spacing: .15em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+    .stat-num { font-size: 1.8rem; font-weight: 700; color: var(--gold2); line-height: 1; }
+    .stat-icon { position: absolute; top: 16px; left: 16px; font-size: 1.4rem; color: rgba(200,169,110,.15); }
+
+    /* TABS */
+    .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 28px; }
+    .tab-btn {
+      padding: 12px 24px; font-size: .82rem; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--muted); cursor: pointer; background: none; border: none;
+      border-bottom: 2px solid transparent; margin-bottom: -1px;
+      font-family: var(--ff); transition: all .2s;
+    }
+    .tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* SECTION CARD */
+    .section-card { background: var(--card); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; margin-bottom: 28px; }
+    .section-card-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 24px; border-bottom: 1px solid var(--border); background: var(--dark); }
+    .section-card-header h3 { font-size: .8rem; letter-spacing: .2em; text-transform: uppercase; color: var(--gold); }
+
+    /* ADD PRODUCT FORM */
+    .add-form { padding: 24px; }
+    .form-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .form-group { margin-bottom: 0; }
+    .form-group label { display: block; font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 7px; }
+    .form-control {
+      width: 100%; background: var(--dark); border: 1px solid var(--border);
+      color: var(--cream); font-family: var(--ff); font-size: .9rem;
+      padding: 11px 14px; border-radius: 4px; outline: none; transition: border-color .2s;
+    }
+    .form-control:focus { border-color: var(--gold); }
+    textarea.form-control { resize: vertical; min-height: 80px; }
+    .form-full { grid-column: 1 / -1; }
+    .form-actions { margin-top: 16px; display: flex; gap: 10px; }
+
+    /* BTN */
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 10px 20px; font-family: var(--ff); font-size: .85rem;
+      border: none; cursor: pointer; border-radius: 4px; transition: all .2s;
+    }
+    .btn-gold { background: var(--gold); color: var(--black); font-weight: 700; }
+    .btn-gold:hover { background: var(--gold2); }
+    .btn-sm { padding: 6px 12px; font-size: .78rem; }
+    .btn-outline { background: transparent; color: var(--cream); border: 1px solid var(--border); }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-danger:hover { background: #a93226; }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-warning { background: var(--warning); color: var(--black); font-weight: 600; }
+
+    /* TABLE */
+    .data-table { width: 100%; border-collapse: collapse; }
+    .data-table th { padding: 12px 16px; text-align: right; font-size: .72rem; letter-spacing: .15em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--border); background: var(--dark); font-weight: 400; }
+    .data-table td { padding: 14px 16px; border-bottom: 1px solid var(--border); font-size: .88rem; vertical-align: middle; }
+    .data-table tr:last-child td { border: none; }
+    .data-table tr:hover td { background: rgba(255,255,255,.02); }
+
+    .product-thumb { width: 44px; height: 56px; background: var(--dark); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; overflow: hidden; border-radius: 2px; flex-shrink: 0; }
+    .product-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .product-info-cell { display: flex; align-items: center; gap: 12px; }
+    .cell-name { font-size: .9rem; color: var(--cream); }
+    .cell-cat { font-size: .75rem; color: var(--muted); margin-top: 2px; }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 10px; border-radius: 20px; font-size: .72rem;
+      font-weight: 600; letter-spacing: .05em;
+    }
+    .badge-active { background: rgba(39,174,96,.15); color: #6fcf97; border: 1px solid rgba(39,174,96,.3); }
+    .badge-inactive { background: rgba(192,57,43,.1); color: #e87a7a; border: 1px solid rgba(192,57,43,.3); }
+    .badge-pending  { background: rgba(243,156,18,.1);  color: #f7c654; border: 1px solid rgba(243,156,18,.3); }
+    .badge-confirmed{ background: rgba(52,152,219,.1);  color: #74b9ff; border: 1px solid rgba(52,152,219,.3); }
+    .badge-delivered{ background: rgba(39,174,96,.15);  color: #6fcf97; border: 1px solid rgba(39,174,96,.3); }
+    .badge-cancelled{ background: rgba(192,57,43,.1);   color: #e87a7a; border: 1px solid rgba(192,57,43,.3); }
+
+    /* MODAL */
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+    .modal.open { display: flex; }
+    .modal-box { background: var(--card); border: 1px solid var(--border); border-radius: 4px; padding: 32px; width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; animation: fadeUp .25s ease; }
+    .modal-title { font-family: var(--ff-en); font-style: italic; font-size: 1.3rem; color: var(--gold); margin-bottom: 24px; }
+    .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .modal-full { grid-column: 1 / -1; }
+    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+
+    /* FLASH */
+    .flash-bar { padding: 12px 24px; font-size: .88rem; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid; }
+    .flash-bar.success { background: rgba(39,174,96,.1); border-color: rgba(39,174,96,.3); color: #6fcf97; }
+    .flash-bar.error   { background: rgba(192,57,43,.1); border-color: rgba(192,57,43,.3); color: #e87a7a; }
+    .flash-bar.info    { background: rgba(200,169,110,.08); border-color: rgba(200,169,110,.2); color: var(--gold); }
+
+    @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:none; } }
+
+    .empty-row td { text-align: center; color: var(--muted); padding: 40px; }
+
+    select.form-control { appearance: none; }
+
+    @media (max-width: 1000px) {
+      .sidebar { display: none; }
+      .main { margin-right: 0; padding: 20px; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="brand">Saivra</div>
+    <div class="tag">Admin Panel</div>
+  </div>
+  <nav class="nav-menu">
+    <div class="nav-item active" onclick="showTab('products')"><i class="fa fa-boxes-stacked"></i> المنتجات</div>
+    <div class="nav-item" onclick="showTab('orders')"><i class="fa fa-receipt"></i> الطلبات</div>
+    <div class="nav-item" onclick="window.open('/', '_blank')"><i class="fa fa-eye"></i> عرض الموقع</div>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="{{ url_for('admin_logout') }}" class="logout-btn"><i class="fa fa-right-from-bracket"></i> تسجيل خروج</a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <!-- FLASHES -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}
+      <div class="flash-bar {{ cat }}" id="fb"><i class="fa fa-circle-check"></i> {{ msg }}</div>
+    {% endfor %}
+  {% endwith %}
+
+  <div class="page-header">
+    <div>
+      <h1>لوحة التحكم</h1>
+      <div class="header-meta">مرحباً بك، Admin</div>
+    </div>
+    <button class="btn btn-gold" onclick="openModal('addModal')"><i class="fa fa-plus"></i> منتج جديد</button>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">إجمالي المنتجات</div>
+      <div class="stat-num">{{ stats.total_products }}</div>
+      <i class="fa fa-boxes-stacked stat-icon"></i>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">منتجات نشطة</div>
+      <div class="stat-num">{{ stats.active_products }}</div>
+      <i class="fa fa-circle-check stat-icon"></i>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">إجمالي الطلبات</div>
+      <div class="stat-num">{{ stats.total_orders }}</div>
+      <i class="fa fa-receipt stat-icon"></i>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">طلبات معلقة</div>
+      <div class="stat-num">{{ stats.pending_orders }}</div>
+      <i class="fa fa-clock stat-icon"></i>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">الإيرادات</div>
+      <div class="stat-num" style="font-size:1.3rem;">{{ "%.0f"|format(stats.revenue) }} ج</div>
+      <i class="fa fa-coins stat-icon"></i>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('products')"><i class="fa fa-boxes-stacked"></i> المنتجات</button>
+    <button class="tab-btn" onclick="showTab('orders')"><i class="fa fa-receipt"></i> الطلبات</button>
+  </div>
+
+  <!-- PRODUCTS TAB -->
+  <div class="tab-panel active" id="tab-products">
+    <div class="section-card">
+      <div class="section-card-header">
+        <h3>المنتجات ({{ products|length }})</h3>
+        <button class="btn btn-gold btn-sm" onclick="openModal('addModal')"><i class="fa fa-plus"></i> إضافة</button>
+      </div>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>المنتج</th>
+            <th>الفئة</th>
+            <th>السعر</th>
+            <th>المخزون</th>
+            <th>الحالة</th>
+            <th>إجراءات</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if products %}
+            {% for p in products %}
+            <tr>
+              <td>
+                <div class="product-info-cell">
+                  <div class="product-thumb">
+                    {% if p.image_url %}<img src="{{ p.image_url }}" alt=""/>
+                    {% else %}🪻{% endif %}
+                  </div>
+                  <div>
+                    <div class="cell-name">{{ p.name }}</div>
+                    <div class="cell-cat">{{ p.description[:40] ~ '...' if p.description and p.description|length > 40 else p.description }}</div>
+                  </div>
+                </div>
+              </td>
+              <td>{{ p.category }}</td>
+              <td style="color:var(--gold2);font-weight:600;">{{ "%.0f"|format(p.price) }} ج.م</td>
+              <td>{{ p.stock }}</td>
+              <td>
+                <span class="badge {% if p.active %}badge-active{% else %}badge-inactive{% endif %}">
+                  {% if p.active %}<i class="fa fa-circle-check"></i> نشط{% else %}<i class="fa fa-circle-xmark"></i> مخفي{% endif %}
+                </span>
+              </td>
+              <td>
+                <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                  <button class="btn btn-outline btn-sm" onclick='openEditModal({{ p.id }}, {{ p.name|tojson }}, {{ p.description|tojson if p.description else "\"\"" }}, {{ p.price }}, {{ p.image_url|tojson if p.image_url else "\"\"" }}, {{ p.category|tojson }}, {{ p.stock }}, {{ p.active }})'>
+                    <i class="fa fa-pen"></i> تعديل
+                  </button>
+                  <a href="{{ url_for('toggle_product', pid=p.id) }}" class="btn btn-sm {% if p.active %}btn-warning{% else %}btn-success{% endif %}">
+                    {% if p.active %}<i class="fa fa-eye-slash"></i> إخفاء{% else %}<i class="fa fa-eye"></i> إظهار{% endif %}
+                  </a>
+                  <a href="{{ url_for('delete_product', pid=p.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('هل أنت متأكد من حذف هذا المنتج؟')">
+                    <i class="fa fa-trash"></i>
+                  </a>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          {% else %}
+            <tr class="empty-row"><td colspan="6"><i class="fa fa-wind"></i> لا توجد منتجات بعد — أضف أول منتج!</td></tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ORDERS TAB -->
+  <div class="tab-panel" id="tab-orders">
+    <div class="section-card">
+      <div class="section-card-header">
+        <h3>الطلبات ({{ orders|length }})</h3>
+      </div>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>العميل</th>
+            <th>الهاتف</th>
+            <th>العنوان</th>
+            <th>الإجمالي</th>
+            <th>التاريخ</th>
+            <th>الحالة</th>
+            <th>تغيير الحالة</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if orders %}
+            {% for o in orders %}
+            <tr>
+              <td style="color:var(--muted)">#{{ o.id }}</td>
+              <td style="color:var(--cream);font-weight:500;">{{ o.customer_name }}</td>
+              <td>{{ o.customer_phone or '—' }}</td>
+              <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="{{ o.customer_address }}">{{ o.customer_address or '—' }}</td>
+              <td style="color:var(--gold2);font-weight:600;">{{ "%.0f"|format(o.total) }} ج.م</td>
+              <td style="color:var(--muted);font-size:.8rem;">{{ o.created_at[:16] }}</td>
+              <td>
+                <span class="badge badge-{{ o.status }}">
+                  {% if o.status == 'pending' %}⏳ معلق
+                  {% elif o.status == 'confirmed' %}✓ مؤكد
+                  {% elif o.status == 'delivered' %}✅ مسلّم
+                  {% elif o.status == 'cancelled' %}✗ ملغي
+                  {% else %}{{ o.status }}{% endif %}
+                </span>
+              </td>
+              <td>
+                <form method="post" action="{{ url_for('update_order', oid=o.id) }}" style="display:flex;gap:6px;align-items:center;">
+                  <select name="status" class="form-control" style="padding:6px 10px;font-size:.8rem;width:110px;">
+                    <option value="pending"   {% if o.status=='pending' %}selected{% endif %}>معلق</option>
+                    <option value="confirmed" {% if o.status=='confirmed' %}selected{% endif %}>مؤكد</option>
+                    <option value="delivered" {% if o.status=='delivered' %}selected{% endif %}>مسلّم</option>
+                    <option value="cancelled" {% if o.status=='cancelled' %}selected{% endif %}>ملغي</option>
+                  </select>
+                  <button type="submit" class="btn btn-gold btn-sm"><i class="fa fa-check"></i></button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          {% else %}
+            <tr class="empty-row"><td colspan="8"><i class="fa fa-inbox"></i> لا توجد طلبات بعد</td></tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ADD PRODUCT MODAL -->
+<div class="modal" id="addModal">
+  <div class="modal-box">
+    <div class="modal-title">✦ إضافة منتج جديد</div>
+    <form method="post" action="{{ url_for('add_product') }}">
+      <div class="modal-grid">
+        <div class="form-group modal-full">
+          <label>اسم المنتج *</label>
+          <input type="text" name="name" class="form-control" placeholder="مثال: Oud Royal" required/>
+        </div>
+        <div class="form-group">
+          <label>السعر (ج.م) *</label>
+          <input type="number" name="price" class="form-control" placeholder="0" min="0" step="0.01" required/>
+        </div>
+        <div class="form-group">
+          <label>الكمية في المخزن</label>
+          <input type="number" name="stock" class="form-control" placeholder="0" min="0"/>
+        </div>
+        <div class="form-group">
+          <label>الفئة</label>
+          <select name="category" class="form-control">
+            <option>عطر</option>
+            <option>عود</option>
+            <option>مسك</option>
+            <option>زيت عطري</option>
+            <option>بخور</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>رابط الصورة</label>
+          <input type="url" name="image_url" class="form-control" placeholder="https://..."/>
+        </div>
+        <div class="form-group modal-full">
+          <label>الوصف</label>
+          <textarea name="description" class="form-control" placeholder="وصف العطر، مكوناته، مناسباته..."></textarea>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-outline" onclick="closeModal('addModal')">إلغاء</button>
+        <button type="submit" class="btn btn-gold"><i class="fa fa-plus"></i> إضافة المنتج</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- EDIT PRODUCT MODAL -->
+<div class="modal" id="editModal">
+  <div class="modal-box">
+    <div class="modal-title">✦ تعديل المنتج</div>
+    <form method="post" id="editForm" action="">
+      <div class="modal-grid">
+        <div class="form-group modal-full">
+          <label>اسم المنتج *</label>
+          <input type="text" name="name" id="editName" class="form-control" required/>
+        </div>
+        <div class="form-group">
+          <label>السعر (ج.م) *</label>
+          <input type="number" name="price" id="editPrice" class="form-control" step="0.01" required/>
+        </div>
+        <div class="form-group">
+          <label>الكمية في المخزن</label>
+          <input type="number" name="stock" id="editStock" class="form-control"/>
+        </div>
+        <div class="form-group">
+          <label>الفئة</label>
+          <select name="category" id="editCategory" class="form-control">
+            <option>عطر</option>
+            <option>عود</option>
+            <option>مسك</option>
+            <option>زيت عطري</option>
+            <option>بخور</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>رابط الصورة</label>
+          <input type="url" name="image_url" id="editImage" class="form-control"/>
+        </div>
+        <div class="form-group modal-full">
+          <label>الوصف</label>
+          <textarea name="description" id="editDesc" class="form-control"></textarea>
+        </div>
+        <div class="form-group modal-full" style="display:flex;align-items:center;gap:10px;">
+          <input type="checkbox" name="active" id="editActive" style="width:18px;height:18px;accent-color:var(--gold);"/>
+          <label for="editActive" style="text-transform:none;letter-spacing:0;font-size:.9rem;">منتج نشط (ظاهر في الموقع)</label>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-outline" onclick="closeModal('editModal')">إلغاء</button>
+        <button type="submit" class="btn btn-gold"><i class="fa fa-check"></i> حفظ التعديلات</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Tabs
+  function showTab(name) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    document.querySelectorAll(`.tab-btn`).forEach(b => { if (b.textContent.includes(name === 'products' ? 'المنتجات' : 'الطلبات')) b.classList.add('active'); });
+    document.querySelectorAll('.nav-item').forEach(n => { if (n.textContent.includes(name === 'products' ? 'المنتجات' : 'الطلبات')) n.classList.add('active'); });
+  }
+
+  // Modals
+  function openModal(id) { document.getElementById(id).classList.add('open'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+  // Click outside to close
+  document.querySelectorAll('.modal').forEach(m => {
+    m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
+  });
+
+  // Edit modal
+  function openEditModal(id, name, desc, price, img, cat, stock, active) {
+    document.getElementById('editForm').action = `/admin/edit_product/${id}`;
+    document.getElementById('editName').value = name;
+    document.getElementById('editDesc').value = desc;
+    document.getElementById('editPrice').value = price;
+    document.getElementById('editImage').value = img;
+    document.getElementById('editStock').value = stock;
+    document.getElementById('editActive').checked = active === 1;
+    // Set category
+    const sel = document.getElementById('editCategory');
+    for (let o of sel.options) { if (o.value === cat) { sel.value = cat; break; } }
+    openModal('editModal');
+  }
+
+  // Auto-dismiss flash
+  setTimeout(() => {
+    const fb = document.getElementById('fb');
+    if (fb) { fb.style.transition = 'opacity .4s'; fb.style.opacity = '0'; setTimeout(() => fb.remove(), 400); }
+  }, 3500);
+</script>
+</body>
+</html>
