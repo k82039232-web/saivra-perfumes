@@ -1,13 +1,18 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for, session, flash, Response
 import sqlite3
 import os
 import json
 from functools import wraps
 
 app = Flask(__name__)
-app.secret_key = 'saivra_secret_key_2024_secure'
+app.secret_key = os.environ.get('SECRET_KEY', 'saivra_secret_key_2024_secure')
 
 DATABASE = 'saivra.db'
+
+ADMIN_USERNAME = os.environ.get('ADMIN_USERNAME', 'admin')
+ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'saivra2024')
+
+SITE_URL = 'https://saivra-perfumes.up.railway.app'
 
 # ─────────────────────────────────────────
 #  DATABASE HELPERS
@@ -62,7 +67,7 @@ def admin_required(f):
 # ─────────────────────────────────────────
 
 @app.context_processor
-def cart_count():
+def inject_cart_count():
     cart = session.get('cart', {})
     count = sum(cart.values())
     return dict(cart_count=count)
@@ -161,10 +166,10 @@ def checkout():
             total += subtotal
 
     if request.method == 'POST':
-        name    = request.form.get('name')
-        email   = request.form.get('email', '')
-        phone   = request.form.get('phone')
-        address = request.form.get('address')
+        name       = request.form.get('name')
+        email      = request.form.get('email', '')
+        phone      = request.form.get('phone')
+        address    = request.form.get('address')
         items_json = json.dumps([{'id': k, 'qty': v} for k, v in cart.items()])
         conn.execute(
             'INSERT INTO orders (customer_name,customer_email,customer_phone,customer_address,items,total) VALUES (?,?,?,?,?,?)',
@@ -173,6 +178,7 @@ def checkout():
         conn.commit()
         conn.close()
         session['cart'] = {}
+        flash('تم استلام طلبك بنجاح! سنتواصل معك قريباً ✓', 'success')
         return redirect(url_for('success'))
 
     conn.close()
@@ -185,6 +191,41 @@ def success():
 
 
 # ─────────────────────────────────────────
+#  SITEMAP & SEO
+# ─────────────────────────────────────────
+
+@app.route('/sitemap.xml')
+def sitemap():
+    conn = get_db()
+    products = conn.execute(
+        'SELECT id FROM products WHERE active=1'
+    ).fetchall()
+    conn.close()
+
+    urls = [
+        f'<url><loc>{SITE_URL}/</loc><priority>1.0</priority></url>',
+        f'<url><loc>{SITE_URL}/cart</loc><priority>0.5</priority></url>',
+    ]
+    for p in products:
+        urls.append(
+            f'<url><loc>{SITE_URL}/product/{p["id"]}</loc><priority>0.8</priority></url>'
+        )
+
+    xml = '<?xml version="1.0" encoding="UTF-8"?>\n'
+    xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+    xml += '\n'.join(urls)
+    xml += '\n</urlset>'
+
+    return Response(xml, mimetype='application/xml')
+
+
+@app.route('/robots.txt')
+def robots():
+    content = f"User-agent: *\nAllow: /\nSitemap: {SITE_URL}/sitemap.xml"
+    return Response(content, mimetype='text/plain')
+
+
+# ─────────────────────────────────────────
 #  ADMIN ROUTES
 # ─────────────────────────────────────────
 
@@ -193,7 +234,7 @@ def admin_login():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-        if username == 'admin' and password == 'saivra2024':
+        if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
             session['admin_logged_in'] = True
             return redirect(url_for('admin'))
         flash('اسم المستخدم أو كلمة المرور غير صحيحة', 'error')
@@ -213,11 +254,11 @@ def admin():
     products = conn.execute('SELECT * FROM products ORDER BY created_at DESC').fetchall()
     orders   = conn.execute('SELECT * FROM orders   ORDER BY created_at DESC').fetchall()
     stats = {
-        'total_products': len(products),
+        'total_products':  len(products),
         'active_products': sum(1 for p in products if p['active']),
-        'total_orders': len(orders),
-        'pending_orders': sum(1 for o in orders if o['status'] == 'pending'),
-        'revenue': sum(o['total'] for o in orders if o['status'] != 'cancelled'),
+        'total_orders':    len(orders),
+        'pending_orders':  sum(1 for o in orders if o['status'] == 'pending'),
+        'revenue':         sum(o['total'] for o in orders if o['status'] != 'cancelled'),
     }
     conn.close()
     return render_template('admin.html', products=products, orders=orders, stats=stats)
@@ -318,4 +359,5 @@ def delete_order(oid):
 
 if __name__ == '__main__':
     init_db()
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(debug=False, host='0.0.0.0', port=port)
