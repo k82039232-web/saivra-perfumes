@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}تاكيد الطلب — Saivra{% endblock %}
+{% block title %}إتمام الطلب — Saivra{% endblock %}
 
 {% block head %}
 <style>
@@ -82,7 +82,7 @@
 
 {% block content %}
 <div class="checkout-page">
-  <h1 class="page-title"><span>تاكيد</span> الطلب</h1>
+  <h1 class="page-title"><span>إتمام</span> الطلب</h1>
   <p class="page-sub">أدخل بياناتك وسيتواصل معك فريقنا لتأكيد الطلب</p>
 
   <form method="post" action="{{ url_for('checkout') }}">
@@ -141,7 +141,7 @@
         <div class="row"><span class="label">المجموع الفرعي</span><span>{{ "%.0f"|format(total) }} ج.م</span></div>
         <div class="row"><span class="label">الشحن</span><span style="color:var(--gold)">for free</span></div>
         <div class="grand">
-          <span class="label">Total</span>
+          <span class="label">الإجمالي</span>
           <span class="amount">{{ "%.0f"|format(total) }} <small style="font-size:.8rem;font-weight:300;">ج.م</small></span>
         </div>
       </div>
