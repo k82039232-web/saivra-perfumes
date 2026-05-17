@@ -23,12 +23,9 @@
     .sidebar {
       position: fixed; top: 0; right: 0; bottom: 0; width: 240px;
       background: var(--dark); border-left: 1px solid var(--border);
-      display: flex; flex-direction: column; z-index: 100; padding: 0;
+      display: flex; flex-direction: column; z-index: 100;
     }
-    .sidebar-logo {
-      padding: 28px 24px;
-      border-bottom: 1px solid var(--border);
-    }
+    .sidebar-logo { padding: 28px 24px; border-bottom: 1px solid var(--border); }
     .sidebar-logo .brand { font-family: var(--ff-en); font-style: italic; font-size: 1.5rem; color: var(--gold); }
     .sidebar-logo .tag { font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); margin-top: 2px; }
     .nav-menu { flex: 1; padding: 16px 12px; }
@@ -36,8 +33,7 @@
       display: flex; align-items: center; gap: 12px;
       padding: 12px 14px; border-radius: 4px;
       font-size: .9rem; color: var(--muted);
-      cursor: pointer; transition: all .2s;
-      margin-bottom: 4px;
+      cursor: pointer; transition: all .2s; margin-bottom: 4px;
     }
     .nav-item:hover, .nav-item.active { background: rgba(200,169,110,.08); color: var(--gold); }
     .nav-item i { width: 18px; text-align: center; font-size: .9rem; }
@@ -49,11 +45,32 @@
     }
     .logout-btn:hover { color: var(--danger); }
 
+    /* MOBILE TOPBAR */
+    .mobile-topbar {
+      display: none; position: fixed; top: 0; left: 0; right: 0;
+      background: var(--dark); border-bottom: 1px solid var(--border);
+      padding: 12px 16px; z-index: 200;
+      align-items: center; justify-content: space-between;
+    }
+    .mobile-topbar .brand { font-family: var(--ff-en); font-style: italic; font-size: 1.2rem; color: var(--gold); }
+    .hamburger { background: none; border: none; color: var(--cream); font-size: 1.3rem; cursor: pointer; }
+
+    /* MOBILE DRAWER */
+    .drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 300; }
+    .drawer-overlay.open { display: block; }
+    .drawer {
+      position: fixed; top: 0; right: -260px; bottom: 0; width: 240px;
+      background: var(--dark); border-left: 1px solid var(--border);
+      z-index: 301; transition: right .3s ease;
+      display: flex; flex-direction: column;
+    }
+    .drawer.open { right: 0; }
+
     /* MAIN */
     .main { margin-right: 240px; padding: 36px; min-height: 100vh; }
 
     /* HEADER */
-    .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; }
+    .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; flex-wrap: wrap; gap: 12px; }
     .page-header h1 { font-family: var(--ff-en); font-style: italic; font-size: 1.8rem; color: var(--cream); }
     .header-meta { font-size: .8rem; color: var(--muted); }
 
@@ -61,8 +78,7 @@
     .stats-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 36px; }
     .stat-card {
       background: var(--card); border: 1px solid var(--border);
-      border-radius: 4px; padding: 20px;
-      position: relative; overflow: hidden;
+      border-radius: 4px; padding: 20px; position: relative; overflow: hidden;
     }
     .stat-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: var(--gold); transform: scaleX(0); transition: transform .3s; transform-origin: right; }
     .stat-card:hover::after { transform: scaleX(1); }
@@ -71,25 +87,40 @@
     .stat-icon { position: absolute; top: 16px; left: 16px; font-size: 1.4rem; color: rgba(200,169,110,.15); }
 
     /* TABS */
-    .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 28px; }
+    .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 28px; overflow-x: auto; }
     .tab-btn {
       padding: 12px 24px; font-size: .82rem; letter-spacing: .1em; text-transform: uppercase;
       color: var(--muted); cursor: pointer; background: none; border: none;
       border-bottom: 2px solid transparent; margin-bottom: -1px;
-      font-family: var(--ff); transition: all .2s;
+      font-family: var(--ff); transition: all .2s; white-space: nowrap;
     }
     .tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
 
+    /* SEARCH BAR */
+    .search-bar {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--dark); border: 1px solid var(--border);
+      border-radius: 4px; padding: 10px 16px; margin-bottom: 16px;
+    }
+    .search-bar i { color: var(--muted); font-size: .9rem; }
+    .search-bar input {
+      flex: 1; background: none; border: none; outline: none;
+      color: var(--cream); font-family: var(--ff); font-size: .9rem;
+    }
+    .search-bar input::placeholder { color: var(--muted); }
+
     /* SECTION CARD */
     .section-card { background: var(--card); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; margin-bottom: 28px; }
-    .section-card-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 24px; border-bottom: 1px solid var(--border); background: var(--dark); }
+    .section-card-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 24px; border-bottom: 1px solid var(--border); background: var(--dark); flex-wrap: wrap; gap: 8px; }
     .section-card-header h3 { font-size: .8rem; letter-spacing: .2em; text-transform: uppercase; color: var(--gold); }
+
+    /* TABLE WRAPPER — scrollable on mobile */
+    .table-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
     /* ADD PRODUCT FORM */
     .add-form { padding: 24px; }
-    .form-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
     .form-group { margin-bottom: 0; }
     .form-group label { display: block; font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 7px; }
     .form-control {
@@ -99,14 +130,13 @@
     }
     .form-control:focus { border-color: var(--gold); }
     textarea.form-control { resize: vertical; min-height: 80px; }
-    .form-full { grid-column: 1 / -1; }
-    .form-actions { margin-top: 16px; display: flex; gap: 10px; }
 
     /* BTN */
     .btn {
       display: inline-flex; align-items: center; gap: 6px;
       padding: 10px 20px; font-family: var(--ff); font-size: .85rem;
       border: none; cursor: pointer; border-radius: 4px; transition: all .2s;
+      white-space: nowrap;
     }
     .btn-gold { background: var(--gold); color: var(--black); font-weight: 700; }
     .btn-gold:hover { background: var(--gold2); }
@@ -119,38 +149,38 @@
     .btn-warning { background: var(--warning); color: var(--black); font-weight: 600; }
 
     /* TABLE */
-    .data-table { width: 100%; border-collapse: collapse; }
-    .data-table th { padding: 12px 16px; text-align: right; font-size: .72rem; letter-spacing: .15em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--border); background: var(--dark); font-weight: 400; }
+    .data-table { width: 100%; border-collapse: collapse; min-width: 600px; }
+    .data-table th { padding: 12px 16px; text-align: right; font-size: .72rem; letter-spacing: .15em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--border); background: var(--dark); font-weight: 400; white-space: nowrap; }
     .data-table td { padding: 14px 16px; border-bottom: 1px solid var(--border); font-size: .88rem; vertical-align: middle; }
     .data-table tr:last-child td { border: none; }
     .data-table tr:hover td { background: rgba(255,255,255,.02); }
 
     .product-thumb { width: 44px; height: 56px; background: var(--dark); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; overflow: hidden; border-radius: 2px; flex-shrink: 0; }
     .product-thumb img { width: 100%; height: 100%; object-fit: cover; }
-    .product-info-cell { display: flex; align-items: center; gap: 12px; }
-    .cell-name { font-size: .9rem; color: var(--cream); }
+    .product-info-cell { display: flex; align-items: center; gap: 12px; min-width: 160px; }
+    .cell-name { font-size: .9rem; color: var(--cream); word-break: break-word; }
     .cell-cat { font-size: .75rem; color: var(--muted); margin-top: 2px; }
 
     .badge {
       display: inline-flex; align-items: center; gap: 5px;
       padding: 4px 10px; border-radius: 20px; font-size: .72rem;
-      font-weight: 600; letter-spacing: .05em;
+      font-weight: 600; letter-spacing: .05em; white-space: nowrap;
     }
-    .badge-active { background: rgba(39,174,96,.15); color: #6fcf97; border: 1px solid rgba(39,174,96,.3); }
-    .badge-inactive { background: rgba(192,57,43,.1); color: #e87a7a; border: 1px solid rgba(192,57,43,.3); }
-    .badge-pending  { background: rgba(243,156,18,.1);  color: #f7c654; border: 1px solid rgba(243,156,18,.3); }
-    .badge-confirmed{ background: rgba(52,152,219,.1);  color: #74b9ff; border: 1px solid rgba(52,152,219,.3); }
-    .badge-delivered{ background: rgba(39,174,96,.15);  color: #6fcf97; border: 1px solid rgba(39,174,96,.3); }
-    .badge-cancelled{ background: rgba(192,57,43,.1);   color: #e87a7a; border: 1px solid rgba(192,57,43,.3); }
+    .badge-active    { background: rgba(39,174,96,.15);  color: #6fcf97; border: 1px solid rgba(39,174,96,.3); }
+    .badge-inactive  { background: rgba(192,57,43,.1);   color: #e87a7a; border: 1px solid rgba(192,57,43,.3); }
+    .badge-pending   { background: rgba(243,156,18,.1);  color: #f7c654; border: 1px solid rgba(243,156,18,.3); }
+    .badge-confirmed { background: rgba(52,152,219,.1);  color: #74b9ff; border: 1px solid rgba(52,152,219,.3); }
+    .badge-delivered { background: rgba(39,174,96,.15);  color: #6fcf97; border: 1px solid rgba(39,174,96,.3); }
+    .badge-cancelled { background: rgba(192,57,43,.1);   color: #e87a7a; border: 1px solid rgba(192,57,43,.3); }
 
     /* MODAL */
-    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px); padding: 16px; }
     .modal.open { display: flex; }
     .modal-box { background: var(--card); border: 1px solid var(--border); border-radius: 4px; padding: 32px; width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; animation: fadeUp .25s ease; }
     .modal-title { font-family: var(--ff-en); font-style: italic; font-size: 1.3rem; color: var(--gold); margin-bottom: 24px; }
     .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .modal-full { grid-column: 1 / -1; }
-    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; flex-wrap: wrap; }
 
     /* FLASH */
     .flash-bar { padding: 12px 24px; font-size: .88rem; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid; }
@@ -159,21 +189,58 @@
     .flash-bar.info    { background: rgba(200,169,110,.08); border-color: rgba(200,169,110,.2); color: var(--gold); }
 
     @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:none; } }
-
     .empty-row td { text-align: center; color: var(--muted); padding: 40px; }
-
     select.form-control { appearance: none; }
+    .actions-cell { display: flex; gap: 6px; flex-wrap: wrap; }
 
-    @media (max-width: 1000px) {
+    /* HIDDEN ROW */
+    tr.hidden-row { display: none; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
       .sidebar { display: none; }
-      .main { margin-right: 0; padding: 20px; }
+      .mobile-topbar { display: flex; }
+      .main { margin-right: 0; padding: 16px; padding-top: 64px; }
       .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .modal-grid { grid-template-columns: 1fr; }
+      .modal-full { grid-column: 1; }
+      .modal-box { padding: 20px; }
+    }
+    @media (max-width: 480px) {
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .stat-num { font-size: 1.4rem; }
+      .page-header h1 { font-size: 1.4rem; }
     }
   </style>
 </head>
 <body>
 
-<!-- SIDEBAR -->
+<!-- MOBILE TOPBAR -->
+<div class="mobile-topbar">
+  <div class="brand">Saivra</div>
+  <button class="hamburger" onclick="toggleDrawer()"><i class="fa fa-bars"></i></button>
+</div>
+
+<!-- MOBILE DRAWER OVERLAY -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer()"></div>
+
+<!-- MOBILE DRAWER -->
+<div class="drawer" id="drawer">
+  <div class="sidebar-logo">
+    <div class="brand">Saivra</div>
+    <div class="tag">Admin Panel</div>
+  </div>
+  <nav class="nav-menu">
+    <div class="nav-item active" onclick="showTab('products');toggleDrawer()"><i class="fa fa-boxes-stacked"></i> المنتجات</div>
+    <div class="nav-item" onclick="showTab('orders');toggleDrawer()"><i class="fa fa-receipt"></i> الطلبات</div>
+    <div class="nav-item" onclick="window.open('/', '_blank')"><i class="fa fa-eye"></i> عرض الموقع</div>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="{{ url_for('admin_logout') }}" class="logout-btn"><i class="fa fa-right-from-bracket"></i> تسجيل خروج</a>
+  </div>
+</div>
+
+<!-- DESKTOP SIDEBAR -->
 <aside class="sidebar">
   <div class="sidebar-logo">
     <div class="brand">Saivra</div>
@@ -191,7 +258,6 @@
 
 <!-- MAIN -->
 <div class="main">
-  <!-- FLASHES -->
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% for cat, msg in messages %}
       <div class="flash-bar {{ cat }}" id="fb"><i class="fa fa-circle-check"></i> {{ msg }}</div>
@@ -243,125 +309,145 @@
 
   <!-- PRODUCTS TAB -->
   <div class="tab-panel active" id="tab-products">
+    <!-- SEARCH -->
+    <div class="search-bar">
+      <i class="fa fa-search"></i>
+      <input type="text" id="productSearch" placeholder="ابحث عن منتج باسمه أو فئته..." oninput="searchProducts()"/>
+    </div>
     <div class="section-card">
       <div class="section-card-header">
-        <h3>المنتجات ({{ products|length }})</h3>
+        <h3>المنتجات (<span id="productCount">{{ products|length }}</span>)</h3>
         <button class="btn btn-gold btn-sm" onclick="openModal('addModal')"><i class="fa fa-plus"></i> إضافة</button>
       </div>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>المنتج</th>
-            <th>الفئة</th>
-            <th>السعر</th>
-            <th>المخزون</th>
-            <th>الحالة</th>
-            <th>إجراءات</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% if products %}
-            {% for p in products %}
+      <div class="table-wrap">
+        <table class="data-table" id="productsTable">
+          <thead>
             <tr>
-              <td>
-                <div class="product-info-cell">
-                  <div class="product-thumb">
-                    {% if p.image_url %}<img src="{{ p.image_url }}" alt=""/>
-                    {% else %}🪻{% endif %}
-                  </div>
-                  <div>
-                    <div class="cell-name">{{ p.name }}</div>
-                    <div class="cell-cat">{{ p.description[:40] ~ '...' if p.description and p.description|length > 40 else p.description }}</div>
-                  </div>
-                </div>
-              </td>
-              <td>{{ p.category }}</td>
-              <td style="color:var(--gold2);font-weight:600;">{{ "%.0f"|format(p.price) }} ج.م</td>
-              <td>{{ p.stock }}</td>
-              <td>
-                <span class="badge {% if p.active %}badge-active{% else %}badge-inactive{% endif %}">
-                  {% if p.active %}<i class="fa fa-circle-check"></i> نشط{% else %}<i class="fa fa-circle-xmark"></i> مخفي{% endif %}
-                </span>
-              </td>
-              <td>
-                <div style="display:flex;gap:6px;flex-wrap:wrap;">
-                  <button class="btn btn-outline btn-sm" onclick='openEditModal({{ p.id }}, {{ p.name|tojson }}, {{ p.description|tojson if p.description else "\"\"" }}, {{ p.price }}, {{ p.image_url|tojson if p.image_url else "\"\"" }}, {{ p.category|tojson }}, {{ p.stock }}, {{ p.active }})'>
-                    <i class="fa fa-pen"></i> تعديل
-                  </button>
-                  <a href="{{ url_for('toggle_product', pid=p.id) }}" class="btn btn-sm {% if p.active %}btn-warning{% else %}btn-success{% endif %}">
-                    {% if p.active %}<i class="fa fa-eye-slash"></i> إخفاء{% else %}<i class="fa fa-eye"></i> إظهار{% endif %}
-                  </a>
-                  <a href="{{ url_for('delete_product', pid=p.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('هل أنت متأكد من حذف هذا المنتج؟')">
-                    <i class="fa fa-trash"></i>
-                  </a>
-                </div>
-              </td>
+              <th>المنتج</th>
+              <th>الفئة</th>
+              <th>السعر</th>
+              <th>المخزون</th>
+              <th>الحالة</th>
+              <th>إجراءات</th>
             </tr>
-            {% endfor %}
-          {% else %}
-            <tr class="empty-row"><td colspan="6"><i class="fa fa-wind"></i> لا توجد منتجات بعد — أضف أول منتج!</td></tr>
-          {% endif %}
-        </tbody>
-      </table>
+          </thead>
+          <tbody id="productsBody">
+            {% if products %}
+              {% for p in products %}
+              <tr data-name="{{ p.name|lower }}" data-cat="{{ p.category|lower }}">
+                <td>
+                  <div class="product-info-cell">
+                    <div class="product-thumb">
+                      {% if p.image_url %}<img src="{{ p.image_url }}" alt=""/>
+                      {% else %}🪻{% endif %}
+                    </div>
+                    <div>
+                      <div class="cell-name">{{ p.name }}</div>
+                      <div class="cell-cat">{{ p.description[:50] ~ '...' if p.description and p.description|length > 50 else p.description }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td>{{ p.category }}</td>
+                <td style="color:var(--gold2);font-weight:600;white-space:nowrap;">{{ "%.0f"|format(p.price) }} ج.م</td>
+                <td>{{ p.stock }}</td>
+                <td>
+                  <span class="badge {% if p.active %}badge-active{% else %}badge-inactive{% endif %}">
+                    {% if p.active %}<i class="fa fa-circle-check"></i> نشط{% else %}<i class="fa fa-circle-xmark"></i> مخفي{% endif %}
+                  </span>
+                </td>
+                <td>
+                  <div class="actions-cell">
+                    <button class="btn btn-outline btn-sm" onclick='openEditModal({{ p.id }}, {{ p.name|tojson }}, {{ p.description|tojson if p.description else "\"\"" }}, {{ p.price }}, {{ p.image_url|tojson if p.image_url else "\"\"" }}, {{ p.category|tojson }}, {{ p.stock }}, {{ p.active }})'>
+                      <i class="fa fa-pen"></i> تعديل
+                    </button>
+                    <a href="{{ url_for('toggle_product', pid=p.id) }}" class="btn btn-sm {% if p.active %}btn-warning{% else %}btn-success{% endif %}">
+                      {% if p.active %}<i class="fa fa-eye-slash"></i>{% else %}<i class="fa fa-eye"></i>{% endif %}
+                    </a>
+                    <a href="{{ url_for('delete_product', pid=p.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('هل أنت متأكد من حذف هذا المنتج؟')">
+                      <i class="fa fa-trash"></i>
+                    </a>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            {% else %}
+              <tr class="empty-row"><td colspan="6"><i class="fa fa-wind"></i> لا توجد منتجات بعد</td></tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 
   <!-- ORDERS TAB -->
   <div class="tab-panel" id="tab-orders">
+    <!-- SEARCH -->
+    <div class="search-bar">
+      <i class="fa fa-search"></i>
+      <input type="text" id="orderSearch" placeholder="ابحث باسم العميل أو رقم الهاتف..." oninput="searchOrders()"/>
+    </div>
     <div class="section-card">
       <div class="section-card-header">
-        <h3>الطلبات ({{ orders|length }})</h3>
+        <h3>الطلبات (<span id="orderCount">{{ orders|length }}</span>)</h3>
       </div>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>العميل</th>
-            <th>الهاتف</th>
-            <th>العنوان</th>
-            <th>الإجمالي</th>
-            <th>التاريخ</th>
-            <th>الحالة</th>
-            <th>تغيير الحالة</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% if orders %}
-            {% for o in orders %}
+      <div class="table-wrap">
+        <table class="data-table" id="ordersTable">
+          <thead>
             <tr>
-              <td style="color:var(--muted)">#{{ o.id }}</td>
-              <td style="color:var(--cream);font-weight:500;">{{ o.customer_name }}</td>
-              <td>{{ o.customer_phone or '—' }}</td>
-              <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="{{ o.customer_address }}">{{ o.customer_address or '—' }}</td>
-              <td style="color:var(--gold2);font-weight:600;">{{ "%.0f"|format(o.total) }} ج.م</td>
-              <td style="color:var(--muted);font-size:.8rem;">{{ o.created_at[:16] }}</td>
-              <td>
-                <span class="badge badge-{{ o.status }}">
-                  {% if o.status == 'pending' %}⏳ معلق
-                  {% elif o.status == 'confirmed' %}✓ مؤكد
-                  {% elif o.status == 'delivered' %}✅ مسلّم
-                  {% elif o.status == 'cancelled' %}✗ ملغي
-                  {% else %}{{ o.status }}{% endif %}
-                </span>
-              </td>
-              <td>
-                <form method="post" action="{{ url_for('update_order', oid=o.id) }}" style="display:flex;gap:6px;align-items:center;">
-                  <select name="status" class="form-control" style="padding:6px 10px;font-size:.8rem;width:110px;">
-                    <option value="pending"   {% if o.status=='pending' %}selected{% endif %}>معلق</option>
-                    <option value="confirmed" {% if o.status=='confirmed' %}selected{% endif %}>مؤكد</option>
-                    <option value="delivered" {% if o.status=='delivered' %}selected{% endif %}>مسلّم</option>
-                    <option value="cancelled" {% if o.status=='cancelled' %}selected{% endif %}>ملغي</option>
-                  </select>
-                  <button type="submit" class="btn btn-gold btn-sm"><i class="fa fa-check"></i></button>
-                </form>
-              </td>
+              <th>#</th>
+              <th>العميل</th>
+              <th>الهاتف</th>
+              <th>العنوان</th>
+              <th>الإجمالي</th>
+              <th>التاريخ</th>
+              <th>الحالة</th>
+              <th>تغيير الحالة</th>
+              <th>حذف</th>
             </tr>
-            {% endfor %}
-          {% else %}
-            <tr class="empty-row"><td colspan="8"><i class="fa fa-inbox"></i> لا توجد طلبات بعد</td></tr>
-          {% endif %}
-        </tbody>
-      </table>
+          </thead>
+          <tbody id="ordersBody">
+            {% if orders %}
+              {% for o in orders %}
+              <tr data-name="{{ o.customer_name|lower }}" data-phone="{{ o.customer_phone or '' }}">
+                <td style="color:var(--muted)">#{{ o.id }}</td>
+                <td style="color:var(--cream);font-weight:500;white-space:nowrap;">{{ o.customer_name }}</td>
+                <td style="white-space:nowrap;">{{ o.customer_phone or '—' }}</td>
+                <td style="min-width:140px;">{{ o.customer_address or '—' }}</td>
+                <td style="color:var(--gold2);font-weight:600;white-space:nowrap;">{{ "%.0f"|format(o.total) }} ج.م</td>
+                <td style="color:var(--muted);font-size:.8rem;white-space:nowrap;">{{ o.created_at[:16] }}</td>
+                <td>
+                  <span class="badge badge-{{ o.status }}">
+                    {% if o.status == 'pending' %}⏳ معلق
+                    {% elif o.status == 'confirmed' %}✓ مؤكد
+                    {% elif o.status == 'delivered' %}✅ مسلّم
+                    {% elif o.status == 'cancelled' %}✗ ملغي
+                    {% else %}{{ o.status }}{% endif %}
+                  </span>
+                </td>
+                <td>
+                  <form method="post" action="{{ url_for('update_order', oid=o.id) }}" style="display:flex;gap:6px;align-items:center;">
+                    <select name="status" class="form-control" style="padding:6px 10px;font-size:.8rem;width:100px;">
+                      <option value="pending"   {% if o.status=='pending' %}selected{% endif %}>معلق</option>
+                      <option value="confirmed" {% if o.status=='confirmed' %}selected{% endif %}>مؤكد</option>
+                      <option value="delivered" {% if o.status=='delivered' %}selected{% endif %}>مسلّم</option>
+                      <option value="cancelled" {% if o.status=='cancelled' %}selected{% endif %}>ملغي</option>
+                    </select>
+                    <button type="submit" class="btn btn-gold btn-sm"><i class="fa fa-check"></i></button>
+                  </form>
+                </td>
+                <td>
+                  <a href="{{ url_for('delete_order', oid=o.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('هل أنت متأكد من حذف هذا الطلب؟')">
+                    <i class="fa fa-trash"></i>
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+            {% else %}
+              <tr class="empty-row"><td colspan="9"><i class="fa fa-inbox"></i> لا توجد طلبات بعد</td></tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
@@ -387,11 +473,8 @@
         <div class="form-group">
           <label>الفئة</label>
           <select name="category" class="form-control">
-            <option>عطر</option>
-            <option>عود</option>
-            <option>مسك</option>
-            <option>زيت عطري</option>
-            <option>بخور</option>
+            <option>عطر</option><option>عود</option><option>مسك</option>
+            <option>زيت عطري</option><option>بخور</option>
           </select>
         </div>
         <div class="form-group">
@@ -432,11 +515,8 @@
         <div class="form-group">
           <label>الفئة</label>
           <select name="category" id="editCategory" class="form-control">
-            <option>عطر</option>
-            <option>عود</option>
-            <option>مسك</option>
-            <option>زيت عطري</option>
-            <option>بخور</option>
+            <option>عطر</option><option>عود</option><option>مسك</option>
+            <option>زيت عطري</option><option>بخور</option>
           </select>
         </div>
         <div class="form-group">
@@ -461,26 +541,34 @@
 </div>
 
 <script>
-  // Tabs
+  /* ── DRAWER ── */
+  function toggleDrawer() {
+    document.getElementById('drawer').classList.toggle('open');
+    document.getElementById('drawerOverlay').classList.toggle('open');
+  }
+
+  /* ── TABS ── */
   function showTab(name) {
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     document.getElementById('tab-' + name).classList.add('active');
-    document.querySelectorAll(`.tab-btn`).forEach(b => { if (b.textContent.includes(name === 'products' ? 'المنتجات' : 'الطلبات')) b.classList.add('active'); });
-    document.querySelectorAll('.nav-item').forEach(n => { if (n.textContent.includes(name === 'products' ? 'المنتجات' : 'الطلبات')) n.classList.add('active'); });
+    document.querySelectorAll('.tab-btn').forEach(b => {
+      if (b.textContent.includes(name === 'products' ? 'المنتجات' : 'الطلبات')) b.classList.add('active');
+    });
+    document.querySelectorAll('.nav-item').forEach(n => {
+      if (n.textContent.includes(name === 'products' ? 'المنتجات' : 'الطلبات')) n.classList.add('active');
+    });
   }
 
-  // Modals
+  /* ── MODALS ── */
   function openModal(id) { document.getElementById(id).classList.add('open'); }
   function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-
-  // Click outside to close
   document.querySelectorAll('.modal').forEach(m => {
     m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
   });
 
-  // Edit modal
+  /* ── EDIT MODAL ── */
   function openEditModal(id, name, desc, price, img, cat, stock, active) {
     document.getElementById('editForm').action = `/admin/edit_product/${id}`;
     document.getElementById('editName').value = name;
@@ -489,13 +577,38 @@
     document.getElementById('editImage').value = img;
     document.getElementById('editStock').value = stock;
     document.getElementById('editActive').checked = active === 1;
-    // Set category
     const sel = document.getElementById('editCategory');
     for (let o of sel.options) { if (o.value === cat) { sel.value = cat; break; } }
     openModal('editModal');
   }
 
-  // Auto-dismiss flash
+  /* ── SEARCH PRODUCTS ── */
+  function searchProducts() {
+    const q = document.getElementById('productSearch').value.toLowerCase();
+    const rows = document.querySelectorAll('#productsBody tr[data-name]');
+    let count = 0;
+    rows.forEach(r => {
+      const match = r.dataset.name.includes(q) || r.dataset.cat.includes(q);
+      r.style.display = match ? '' : 'none';
+      if (match) count++;
+    });
+    document.getElementById('productCount').textContent = count;
+  }
+
+  /* ── SEARCH ORDERS ── */
+  function searchOrders() {
+    const q = document.getElementById('orderSearch').value.toLowerCase();
+    const rows = document.querySelectorAll('#ordersBody tr[data-name]');
+    let count = 0;
+    rows.forEach(r => {
+      const match = r.dataset.name.includes(q) || r.dataset.phone.includes(q);
+      r.style.display = match ? '' : 'none';
+      if (match) count++;
+    });
+    document.getElementById('orderCount').textContent = count;
+  }
+
+  /* ── AUTO DISMISS FLASH ── */
   setTimeout(() => {
     const fb = document.getElementById('fb');
     if (fb) { fb.style.transition = 'opacity .4s'; fb.style.opacity = '0'; setTimeout(() => fb.remove(), 400); }

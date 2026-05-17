@@ -87,7 +87,6 @@ def product(product_id):
     prod = conn.execute(
         'SELECT * FROM products WHERE id=? AND active=1', (product_id,)
     ).fetchone()
-    # Related products (same category, exclude current)
     related = []
     if prod:
         related = conn.execute(
@@ -194,7 +193,6 @@ def admin_login():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-        # Change these credentials before going live!
         if username == 'admin' and password == 'saivra2024':
             session['admin_logged_in'] = True
             return redirect(url_for('admin'))
@@ -300,6 +298,17 @@ def update_order(oid):
     conn.execute('UPDATE orders SET status=? WHERE id=?', (status, oid))
     conn.commit()
     conn.close()
+    return redirect(url_for('admin'))
+
+
+@app.route('/admin/delete_order/<int:oid>')
+@admin_required
+def delete_order(oid):
+    conn = get_db()
+    conn.execute('DELETE FROM orders WHERE id=?', (oid,))
+    conn.commit()
+    conn.close()
+    flash('تم حذف الطلب بنجاح', 'success')
     return redirect(url_for('admin'))
 
 
