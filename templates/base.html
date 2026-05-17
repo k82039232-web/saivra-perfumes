@@ -3,11 +3,16 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="google-site-verification" content="ex7kBLoihHLI2Pjfnb34-0GrF4Wh1wyiqi38Wej8O5U" />
+  <meta name="description" content="Saivra Perfumes — عطور راقية من أجود المكونات العالمية. اكتشف مجموعتنا الحصرية من العطور الفاخرة."/>
+  <meta name="keywords" content="عطور, برفان, Saivra, عطور فاخرة, perfumes, Egypt"/>
   <title>{% block title %}Saivra Perfumes{% endblock %}</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Cormorant+Garamond:wght@300;400;500&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet"/>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+
   <style>
     /* ── TOKENS ── */
     :root {
@@ -56,8 +61,19 @@
     }
 
     /* ── FLASH MESSAGES ── */
-    .flash-wrap { position: fixed; top: 90px; left: 50%; transform: translateX(-50%); z-index: 5000; width: 90%; max-width: 420px; display: flex; flex-direction: column; gap: 8px; }
-    .flash { padding: 12px 20px; border-radius: var(--radius); font-size: .9rem; animation: slideIn .3s ease; border-right: 3px solid; }
+    .flash-wrap {
+      position: fixed; top: 90px; left: 50%;
+      transform: translateX(-50%);
+      z-index: 5000; width: 90%; max-width: 420px;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .flash {
+      padding: 12px 20px;
+      border-radius: var(--radius);
+      font-size: .9rem;
+      animation: slideIn .3s ease;
+      border-right: 3px solid;
+    }
     .flash.success { background: rgba(39,174,96,.15); border-color: var(--success); color: #6fcf97; }
     .flash.error   { background: rgba(192,57,43,.15);  border-color: var(--danger);  color: #e87a7a; }
     .flash.info    { background: rgba(200,169,110,.1);  border-color: var(--gold);    color: var(--gold2); }
@@ -72,7 +88,9 @@
       height: 72px;
       display: flex; align-items: center;
       padding: 0 40px;
+      transition: background .3s;
     }
+    nav.scrolled { background: rgba(8,8,8,.98); }
     .nav-inner {
       width: 100%; max-width: 1300px; margin: 0 auto;
       display: flex; align-items: center; justify-content: space-between;
@@ -83,8 +101,11 @@
       letter-spacing: .2em;
       color: var(--gold);
       font-style: italic;
+      transition: opacity .2s;
     }
+    .nav-logo:hover { opacity: .8; }
     .nav-logo span { color: var(--cream); font-style: normal; font-weight: 600; }
+
     .nav-links { display: flex; align-items: center; gap: 32px; }
     .nav-links a {
       font-size: .82rem;
@@ -94,12 +115,15 @@
       transition: color .2s;
       position: relative;
     }
-    .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--gold); }
     .nav-links a::after {
-      content: ''; position: absolute; bottom: -4px; right: 0; width: 0; height: 1px;
+      content: ''; position: absolute; bottom: -4px; right: 0;
+      width: 0; height: 1px;
       background: var(--gold); transition: width .3s;
     }
     .nav-links a:hover::after { width: 100%; }
+
     .cart-btn {
       position: relative;
       color: var(--cream);
@@ -109,14 +133,38 @@
     .cart-btn:hover { color: var(--gold); }
     .cart-badge {
       position: absolute; top: -8px; left: -8px;
-      background: var(--gold);
-      color: var(--black);
-      font-size: .65rem;
-      font-weight: 700;
-      border-radius: 50%;
-      width: 18px; height: 18px;
+      background: var(--gold); color: var(--black);
+      font-size: .65rem; font-weight: 700;
+      border-radius: 50%; width: 18px; height: 18px;
       display: flex; align-items: center; justify-content: center;
     }
+
+    /* ── SEARCH BAR ── */
+    .nav-search {
+      display: flex; align-items: center;
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 6px 14px;
+      gap: 8px;
+      transition: border-color .2s, background .2s;
+    }
+    .nav-search:focus-within {
+      border-color: var(--gold);
+      background: rgba(200,169,110,.05);
+    }
+    .nav-search input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--cream);
+      font-family: var(--ff-ar);
+      font-size: .85rem;
+      width: 160px;
+      direction: rtl;
+    }
+    .nav-search input::placeholder { color: var(--muted); }
+    .nav-search i { color: var(--muted); font-size: .85rem; }
 
     /* ── MAIN WRAPPER ── */
     main { padding-top: 72px; min-height: calc(100vh - 72px); }
@@ -127,13 +175,30 @@
       border-top: 1px solid var(--border);
       padding: 60px 40px 30px;
     }
-    .footer-inner { max-width: 1300px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 60px; }
-    .footer-brand .brand-name { font-family: var(--ff-en); font-size: 2rem; color: var(--gold); font-style: italic; margin-bottom: 14px; }
+    .footer-inner {
+      max-width: 1300px; margin: 0 auto;
+      display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 60px;
+    }
+    .footer-brand .brand-name {
+      font-family: var(--ff-en); font-size: 2rem;
+      color: var(--gold); font-style: italic; margin-bottom: 14px;
+    }
     .footer-brand p { color: var(--muted); font-size: .9rem; line-height: 1.8; }
-    .footer-col h4 { color: var(--gold); font-size: .75rem; letter-spacing: .2em; text-transform: uppercase; margin-bottom: 18px; }
-    .footer-col a { display: block; color: var(--muted); font-size: .9rem; margin-bottom: 10px; transition: color .2s; }
+    .footer-col h4 {
+      color: var(--gold); font-size: .75rem;
+      letter-spacing: .2em; text-transform: uppercase; margin-bottom: 18px;
+    }
+    .footer-col a {
+      display: block; color: var(--muted);
+      font-size: .9rem; margin-bottom: 10px; transition: color .2s;
+    }
     .footer-col a:hover { color: var(--cream); }
-    .footer-bottom { max-width: 1300px; margin: 40px auto 0; padding-top: 24px; border-top: 1px solid var(--border); text-align: center; color: var(--muted); font-size: .8rem; letter-spacing: .1em; }
+    .footer-bottom {
+      max-width: 1300px; margin: 40px auto 0;
+      padding-top: 24px; border-top: 1px solid var(--border);
+      text-align: center; color: var(--muted);
+      font-size: .8rem; letter-spacing: .1em;
+    }
 
     /* ── BUTTONS ── */
     .btn {
@@ -151,7 +216,11 @@
       color: var(--black);
       font-weight: 700;
     }
-    .btn-gold:hover { background: var(--gold2); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(200,169,110,.3); }
+    .btn-gold:hover {
+      background: var(--gold2);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(200,169,110,.3);
+    }
     .btn-outline {
       background: transparent;
       color: var(--cream);
@@ -171,12 +240,11 @@
     .section-header h2 {
       font-family: var(--ff-en);
       font-size: clamp(2rem, 4vw, 3rem);
-      font-weight: 400;
-      color: var(--cream);
-      font-style: italic;
+      font-weight: 400; color: var(--cream); font-style: italic;
     }
     .section-header .divider {
-      width: 60px; height: 1px; background: var(--gold); margin: 18px auto 0;
+      width: 60px; height: 1px;
+      background: var(--gold); margin: 18px auto 0;
     }
 
     /* ── PRODUCT CARD ── */
@@ -197,6 +265,7 @@
       overflow: hidden;
       background: #1e1e1e;
       position: relative;
+      display: block;
     }
     .product-card .img-wrap img {
       width: 100%; height: 100%;
@@ -210,14 +279,29 @@
       font-size: 3rem; opacity: .2;
     }
     .product-card .card-body { padding: 20px; }
-    .product-card .card-cat { font-size: .72rem; letter-spacing: .2em; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
-    .product-card .card-name { font-family: var(--ff-en); font-size: 1.15rem; font-style: italic; color: var(--cream); margin-bottom: 10px; }
+    .product-card .card-cat {
+      font-size: .72rem; letter-spacing: .2em;
+      text-transform: uppercase; color: var(--gold); margin-bottom: 6px;
+    }
+    .product-card .card-name {
+      font-family: var(--ff-en); font-size: 1.15rem;
+      font-style: italic; color: var(--cream); margin-bottom: 10px;
+    }
     .product-card .card-price { font-size: 1.1rem; font-weight: 700; color: var(--gold2); }
     .product-card .card-price small { font-weight: 300; font-size: .8rem; color: var(--muted); }
-    .product-card .card-footer { padding: 0 20px 20px; display: flex; gap: 8px; }
-    .product-card .card-footer .btn { flex: 1; justify-content: center; font-size: .8rem; padding: 10px 16px; }
+    .product-card .card-footer {
+      padding: 0 20px 20px;
+      display: flex; gap: 8px;
+    }
+    .product-card .card-footer .btn {
+      flex: 1; justify-content: center;
+      font-size: .8rem; padding: 10px 16px;
+    }
 
     /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .nav-search { display: none; }
+    }
     @media (max-width: 768px) {
       nav { padding: 0 20px; }
       .nav-links { gap: 20px; }
@@ -238,9 +322,21 @@
 </div>
 
 <!-- NAV -->
-<nav>
+<nav id="main-nav">
   <div class="nav-inner">
     <a href="{{ url_for('index') }}" class="nav-logo"><span>S</span>aivra</a>
+
+    <div class="nav-search">
+      <i class="fa fa-search"></i>
+      <input
+        type="text"
+        id="nav-search-input"
+        placeholder="ابحث عن عطر..."
+        autocomplete="off"
+        onkeyup="handleSearch(this.value)"
+      />
+    </div>
+
     <div class="nav-links">
       <a href="{{ url_for('index') }}" {% if request.endpoint=='index' %}class="active"{% endif %}>الرئيسية</a>
       <a href="{{ url_for('index') }}#collection">المجموعة</a>
@@ -275,7 +371,7 @@
       <a href="#">info@saivra.com</a>
     </div>
   </div>
-  <div class="footer-bottom">© 2024 Saivra Perfumes · جميع الحقوق محفوظة</div>
+  <div class="footer-bottom">© 2025 Saivra Perfumes · جميع الحقوق محفوظة</div>
 </footer>
 
 <script>
@@ -287,7 +383,51 @@
       setTimeout(() => el.remove(), 400);
     });
   }, 3500);
+
+  // Nav scroll effect
+  window.addEventListener('scroll', () => {
+    const nav = document.getElementById('main-nav');
+    if (window.scrollY > 40) {
+      nav.classList.add('scrolled');
+    } else {
+      nav.classList.remove('scrolled');
+    }
+  });
+
+  // Search function — filters product cards on the page
+  function handleSearch(query) {
+    const q = query.trim().toLowerCase();
+    const cards = document.querySelectorAll('.product-card');
+    if (cards.length === 0) return;
+
+    cards.forEach(card => {
+      const name = (card.querySelector('.card-name')?.textContent || '').toLowerCase();
+      const cat  = (card.querySelector('.card-cat')?.textContent  || '').toLowerCase();
+      const match = !q || name.includes(q) || cat.includes(q);
+      card.style.display = match ? '' : 'none';
+    });
+
+    // Show empty message if nothing matches
+    const grid = document.querySelector('.products-grid');
+    if (!grid) return;
+    let emptyMsg = grid.querySelector('.search-empty');
+    const anyVisible = [...cards].some(c => c.style.display !== 'none');
+    if (!anyVisible && q) {
+      if (!emptyMsg) {
+        emptyMsg = document.createElement('div');
+        emptyMsg.className = 'search-empty';
+        emptyMsg.style.cssText = 'grid-column:1/-1;text-align:center;padding:60px 20px;color:#888880;font-size:1rem;';
+        emptyMsg.textContent = 'لا توجد نتائج لـ "' + query + '"';
+        grid.appendChild(emptyMsg);
+      } else {
+        emptyMsg.textContent = 'لا توجد نتائج لـ "' + query + '"';
+      }
+    } else if (emptyMsg) {
+      emptyMsg.remove();
+    }
+  }
 </script>
+
 {% block scripts %}{% endblock %}
 </body>
 </html>
